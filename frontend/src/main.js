@@ -1,5 +1,6 @@
 import "./style.css";
 
+const API_BASE = import.meta.env.VITE_API_BASE?.trim() || "";
 const app = document.querySelector("#app");
 
 app.innerHTML = `
@@ -8,6 +9,7 @@ app.innerHTML = `
       <p class="eyebrow">自动化行业研究系统</p>
       <h1>研究助手控制台</h1>
       <p class="subtitle">一键查看后端健康状态并生成行业研究摘要。</p>
+      <p class="meta">当前 API 基础地址：${API_BASE || "使用 /api 代理"}</p>
     </header>
     <section class="panel">
       <h2>运行状态</h2>
@@ -32,25 +34,38 @@ const healthResult = document.querySelector("#healthResult");
 const researchResult = document.querySelector("#researchResult");
 const topicInput = document.querySelector("#topicInput");
 
+const fetchJson = async (path) => {
+  const response = await fetch(`${API_BASE}${path}`);
+  if (!response.ok) {
+    const message = await response.text();
+    throw new Error(message || `请求失败 (${response.status})`);
+  }
+  return response.json();
+};
+
 healthBtn.addEventListener("click", async () => {
+  healthBtn.disabled = true;
   healthResult.textContent = "正在请求...";
   try {
-    const response = await fetch("/api/health");
-    const data = await response.json();
+    const data = await fetchJson("/api/health");
     healthResult.textContent = JSON.stringify(data, null, 2);
   } catch (error) {
     healthResult.textContent = `请求失败: ${error}`;
+  } finally {
+    healthBtn.disabled = false;
   }
 });
 
 researchBtn.addEventListener("click", async () => {
+  researchBtn.disabled = true;
   const topic = topicInput.value || "AI 行业";
   researchResult.textContent = "正在生成...";
   try {
-    const response = await fetch(`/api/research?topic=${encodeURIComponent(topic)}`);
-    const data = await response.json();
+    const data = await fetchJson(`/api/research?topic=${encodeURIComponent(topic)}`);
     researchResult.textContent = JSON.stringify(data, null, 2);
   } catch (error) {
     researchResult.textContent = `请求失败: ${error}`;
+  } finally {
+    researchBtn.disabled = false;
   }
 });

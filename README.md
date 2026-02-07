@@ -32,6 +32,12 @@ npm run dev
 
 访问：`http://localhost:5173`
 
+如果你不想使用 Vite 代理（例如前后端在不同端口/机器上），可以创建 `.env.local` 并设置 API 基础地址：
+
+```bash
+VITE_API_BASE=http://localhost:8000
+```
+
 ## Docker 运行
 
 ```bash

@@ -32,6 +32,12 @@ header {
   margin: 0;
 }
 
+.meta {
+  color: #64748b;
+  margin: 0;
+  font-size: 0.9rem;
+}
+
 .panel {
   background: #ffffff;
   border-radius: 16px;
@@ -68,6 +74,11 @@ input {
 
 .primary:hover {
   background: #1d4ed8;
+}
+
+.primary:disabled {
+  background: #94a3b8;
+  cursor: not-allowed;
 }
 
 pre {
