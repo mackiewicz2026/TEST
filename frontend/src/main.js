@@ -23,7 +23,10 @@ app.innerHTML = `
         <input id="topicInput" type="text" value="AI 行业" />
       </label>
       <button id="researchBtn" class="primary">获取 /api/research</button>
-      <pre id="researchResult">等待研究结果...</pre>
+      <div class="report">
+        <h3>完整报告</h3>
+        <pre id="reportContent">等待研究结果...</pre>
+      </div>
     </section>
   </main>
 `;
@@ -31,7 +34,7 @@ app.innerHTML = `
 const healthBtn = document.querySelector("#healthBtn");
 const researchBtn = document.querySelector("#researchBtn");
 const healthResult = document.querySelector("#healthResult");
-const researchResult = document.querySelector("#researchResult");
+const reportContent = document.querySelector("#reportContent");
 const topicInput = document.querySelector("#topicInput");
 
 const fetchJson = async (path) => {
@@ -59,12 +62,12 @@ healthBtn.addEventListener("click", async () => {
 researchBtn.addEventListener("click", async () => {
   researchBtn.disabled = true;
   const topic = topicInput.value || "AI 行业";
-  researchResult.textContent = "正在生成...";
+  reportContent.textContent = "正在生成...";
   try {
     const data = await fetchJson(`/api/research?topic=${encodeURIComponent(topic)}`);
-    researchResult.textContent = JSON.stringify(data, null, 2);
+    reportContent.textContent = data?.report || "未返回完整报告。";
   } catch (error) {
-    researchResult.textContent = `请求失败: ${error}`;
+    reportContent.textContent = `请求失败: ${error}`;
   } finally {
     researchBtn.disabled = false;
   }
