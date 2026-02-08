@@ -46,6 +46,23 @@ const fetchJson = async (path) => {
   return response.json();
 };
 
+const formatReport = (data) => {
+  if (!data || typeof data !== "object") {
+    return "未返回完整报告。";
+  }
+  if (data.report) {
+    return data.report;
+  }
+  const sections = [];
+  if (data.summary) {
+    sections.push(`摘要:\\n${data.summary}`);
+  }
+  if (Array.isArray(data.sources) && data.sources.length > 0) {
+    sections.push(`来源:\n${data.sources.join("\n")}`);
+  }
+  return sections.length > 0 ? sections.join("\n\n") : "未返回完整报告。";
+};
+
 healthBtn.addEventListener("click", async () => {
   healthBtn.disabled = true;
   healthResult.textContent = "正在请求...";
@@ -65,7 +82,7 @@ researchBtn.addEventListener("click", async () => {
   reportContent.textContent = "正在生成...";
   try {
     const data = await fetchJson(`/api/research?topic=${encodeURIComponent(topic)}`);
-    reportContent.textContent = data?.report || "未返回完整报告。";
+    reportContent.textContent = formatReport(data);
   } catch (error) {
     reportContent.textContent = `请求失败: ${error}`;
   } finally {
