@@ -43,6 +43,29 @@ const fetchJson = async (path) => {
   return response.json();
 };
 
+const buildFallbackReport = (data, topic) => {
+  const resolvedTopic = data.topic || topic;
+  const lines = [`${resolvedTopic} 自动化行业研究报告`];
+
+  if (data.summary) {
+    lines.push("", "摘要：", data.summary);
+  }
+
+  if (Array.isArray(data.highlights) && data.highlights.length > 0) {
+    lines.push("", "核心要点：");
+    data.highlights.forEach((item) => lines.push(`- ${item}`));
+  }
+
+  if (data.sections && Object.keys(data.sections).length > 0) {
+    lines.push("", "详细分析：");
+    Object.entries(data.sections).forEach(([title, detail]) => {
+      lines.push(`${title}：${detail}`);
+    });
+  }
+
+  return lines.join("\n");
+};
+
 healthBtn.addEventListener("click", async () => {
   healthBtn.disabled = true;
   healthResult.textContent = "正在请求...";
@@ -74,9 +97,13 @@ researchBtn.addEventListener("click", async () => {
           )
           .join("")
       : "";
+    const fallbackReport = buildFallbackReport(data, topic);
     const reportText = data.report
       ? `<pre class="report-text">${data.report}</pre>`
-      : `<p class="report-missing">后端未返回完整报告字段（report）。请确认后端已更新并重启。</p>`;
+      : `
+        <p class="report-missing">后端未返回完整报告字段（report），已根据摘要自动生成报告内容。</p>
+        <pre class="report-text">${fallbackReport}</pre>
+      `;
     const highlights = Array.isArray(data.highlights)
       ? `<ul>${data.highlights.map((item) => `<li>${item}</li>`).join("")}</ul>`
       : "";
