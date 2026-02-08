@@ -76,7 +76,7 @@ researchBtn.addEventListener("click", async () => {
       : "";
     const reportText = data.report
       ? `<pre class="report-text">${data.report}</pre>`
-      : "";
+      : `<p class="report-missing">后端未返回完整报告字段（report）。请确认后端已更新并重启。</p>`;
     const highlights = Array.isArray(data.highlights)
       ? `<ul>${data.highlights.map((item) => `<li>${item}</li>`).join("")}</ul>`
       : "";
@@ -88,7 +88,8 @@ researchBtn.addEventListener("click", async () => {
       <p class="report-summary">${data.summary || "暂无摘要"}</p>
       ${highlights ? `<h4>核心要点</h4>${highlights}` : ""}
       ${sections ? `<h4>详细分析</h4>${sections}` : ""}
-      ${reportText ? `<h4>完整报告</h4>${reportText}` : ""}
+      <h4>完整报告</h4>
+      ${reportText}
       ${sources ? `<h4>参考来源</h4>${sources}` : ""}
       <details class="report-raw">
         <summary>查看原始 JSON</summary>
