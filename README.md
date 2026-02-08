@@ -55,3 +55,12 @@ docker compose up --build
 ```bash
 npm config set registry https://registry.npmmirror.com
 ```
+
+### Windows: git 命令被同名文件夹遮挡
+
+如果 `where git` 显示类似 `C:\Users\你的用户名\TEST\git` 的路径，说明当前项目里有一个名为 `git` 的文件夹，导致系统优先把它当成命令而不是使用真正的 `git.exe`。这会让 `git` 命令异常或无法运行。
+
+解决方法：
+
+1. 确认当前目录是否存在 `git` 文件夹并删除或重命名（例如改为 `git-cache`）。
+2. 再运行 `where git`，确保只剩下类似 `D:\Program Files\Git\cmd\git.exe` 的路径。
